@@ -69,6 +69,7 @@ public class DESCipher {
             throw new IllegalArgumentException("Failed to decode Base64 key: " + e.getMessage(), e);
         }
     }
+
     public void loadKey(String filePath) throws Exception {
         try (FileInputStream fis = new FileInputStream(filePath);
              DataInputStream dis = new DataInputStream(fis);) {
@@ -95,6 +96,16 @@ public class DESCipher {
 
     public String getBased64Key() {
         return Base64.getEncoder().encodeToString(this.key.getEncoded());
+    }
+
+    public String padPlaintext(String input) {
+        int blockSize = 16;
+        int paddingLength = blockSize - (input.getBytes().length % blockSize);
+        StringBuilder sb = new StringBuilder(input);
+        for (int i = 0; i < paddingLength; i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 
     public String encrypt(String plainText, String keyBase64, String mode, String ivBase64, String padding) throws Exception {
@@ -125,10 +136,11 @@ public class DESCipher {
         }
 
         if ("NoPadding".equals(padding)) {
-            byte[] inputBytes = plainText.getBytes();
-            if (inputBytes.length % 8 != 0) {
-                throw new IllegalArgumentException("Plaintext length must be a multiple of 8 bytes for NoPadding");
-            }
+//            byte[] inputBytes = plainText.getBytes();
+//            if (inputBytes.length % 8 != 0) {
+//                throw new IllegalArgumentException("Plaintext length must be a multiple of 8 bytes for NoPadding");
+//            }
+            plainText = padPlaintext(plainText);
         }
 
         Cipher cipher = Cipher.getInstance(ALGORITHM + "/" + mode + "/" + padding);

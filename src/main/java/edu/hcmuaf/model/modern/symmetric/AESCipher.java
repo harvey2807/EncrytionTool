@@ -69,6 +69,16 @@ public class AESCipher {
         return Base64.getEncoder().encodeToString(this.secretKey.getEncoded());
     }
 
+    public String padPlaintext(String input) {
+        int blockSize = 16;
+        int paddingLength = blockSize - (input.getBytes().length % blockSize);
+        StringBuilder sb = new StringBuilder(input);
+        for (int i = 0; i < paddingLength; i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
     public String encrypt(String plainText, String key, String mode, String iv, String padding) throws Exception {
         if (plainText == null || plainText.isEmpty()) {
             throw new IllegalArgumentException("Plaintext cannot be null or empty");
@@ -90,10 +100,11 @@ public class AESCipher {
         }
         //validate input length for Nopadding
         if ("NoPadding".equals(padding)) {
-            byte[] inputBytes = plainText.getBytes();
-            if (inputBytes.length % 16 != 0) {
-                throw new IllegalArgumentException("plain text's length is invalid");
-            }
+//            byte[] inputBytes = plainText.getBytes();
+//            if (inputBytes.length % 16 != 0) {
+//                throw new IllegalArgumentException("plain text's length is invalid");
+//            }
+            plainText = padPlaintext(plainText);
         }
         Cipher cipher = Cipher.getInstance(ALGORITHM + "/" + mode + "/" + padding);
         if ("ECB".equals(mode)) {

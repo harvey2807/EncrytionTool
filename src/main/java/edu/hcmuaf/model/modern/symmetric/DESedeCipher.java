@@ -68,6 +68,16 @@ public class DESedeCipher {
         return Base64.getEncoder().encodeToString(this.key.getEncoded());
     }
 
+    public String padPlaintext(String input) {
+        int blockSize = 16;
+        int paddingLength = blockSize - (input.getBytes().length % blockSize);
+        StringBuilder sb = new StringBuilder(input);
+        for (int i = 0; i < paddingLength; i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
     // Encrypt plaintext using DESede
     public String encrypt(String plainText, String keyBase64, String ivBase64, String mode, String padding) throws Exception {
         if (plainText == null || plainText.isEmpty()) {
@@ -76,9 +86,9 @@ public class DESedeCipher {
         if (keyBase64 == null || keyBase64.isEmpty()) {
             throw new IllegalArgumentException("Key cannot be null or empty");
         }
-        if (ivBase64 == null || ivBase64.isEmpty()) {
-            throw new IllegalArgumentException("IV cannot be null or empty");
-        }
+//        if (ivBase64 == null || ivBase64.isEmpty()) {
+//            throw new IllegalArgumentException("IV cannot be null or empty");
+//        }
 
         this.setKeyFromBased64(keyBase64);
 //        byte[] ivBytes = Base64.getDecoder().decode(ivBase64);
@@ -89,7 +99,13 @@ public class DESedeCipher {
             byte[] ivByte = Base64.getDecoder().decode(ivBase64);
             this.iv = new IvParameterSpec(ivByte);
         }
-
+        if ("NoPadding".equals(padding)) {
+//            byte[] inputBytes = plainText.getBytes();
+//            if (inputBytes.length % 16 != 0) {
+//                throw new IllegalArgumentException("plain text's length is invalid");
+//            }
+            plainText = padPlaintext(plainText);
+        }
         Cipher cipher = Cipher.getInstance(ALGORITHM + "/" + mode + "/" + padding);
         if ("ECB".equals(mode)) {
             cipher.init(Cipher.ENCRYPT_MODE, key);

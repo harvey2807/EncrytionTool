@@ -83,6 +83,16 @@ public class CamelliaCipher {
         return Base64.getEncoder().encodeToString(this.secretKey.getEncoded());
     }
 
+    public String padPlaintext(String input) {
+        int blockSize = 16;
+        int paddingLength = blockSize - (input.getBytes().length % blockSize);
+        StringBuilder sb = new StringBuilder(input);
+        for (int i = 0; i < paddingLength; i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
     public String encrypt(String plainText, String keyBase64, String mode, String ivBase64, String padding)
             throws Exception {
         if (plainText == null || plainText.isEmpty()) {
@@ -112,10 +122,11 @@ public class CamelliaCipher {
             this.iv = new IvParameterSpec(ivBytes);
         }
         if ("NoPadding".equals(padding)) {
-            byte[] inputBytes = plainText.getBytes(StandardCharsets.UTF_8);
-            if (inputBytes.length % 16 != 0) {
-                throw new IllegalArgumentException("Plaintext length must be a multiple of 16 bytes for NoPadding");
-            }
+//            byte[] inputBytes = plainText.getBytes(StandardCharsets.UTF_8);
+//            if (inputBytes.length % 16 != 0) {
+//                throw new IllegalArgumentException("Plaintext length must be a multiple of 16 bytes for NoPadding");
+//            }
+            plainText = padPlaintext(plainText);
         }
         Cipher cipher = Cipher.getInstance(ALGORITHM + "/" + mode + "/" + padding);
         if ("ECB".equals(mode)) {
