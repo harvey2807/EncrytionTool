@@ -20,14 +20,18 @@ public class AsymmetricUI extends JPanel {
     }
 
     private void init() {
-        setLayout(new GridBagLayout());
+        setLayout(new BorderLayout());
+        JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
 
         // Encryption Settings Panel
         JPanel settingsPanel = new JPanel(new GridBagLayout());
         settingsPanel.setBorder(BorderFactory.createTitledBorder("Encryption Settings"));
+        settingsPanel.setMinimumSize(new Dimension(400, 350));
 
         settingEncryptLabel = new JLabel("Encryption Settings");
         gbc.gridx = 0;
@@ -43,6 +47,7 @@ public class AsymmetricUI extends JPanel {
 
         txtInputKey = new JTextField(20);
         txtInputKey.setEditable(false);
+        txtInputKey.setMinimumSize(new Dimension(200, 25));
         gbc.gridx = 1;
         gbc.gridy = 1;
         settingsPanel.add(txtInputKey, gbc);
@@ -54,6 +59,7 @@ public class AsymmetricUI extends JPanel {
 
         txtInputIV = new JTextField(20);
         txtInputIV.setEditable(false);
+        txtInputIV.setMinimumSize(new Dimension(200, 25));
         gbc.gridx = 1;
         gbc.gridy = 2;
         settingsPanel.add(txtInputIV, gbc);
@@ -63,7 +69,7 @@ public class AsymmetricUI extends JPanel {
         gbc.gridy = 3;
         settingsPanel.add(chooseModeLabel, gbc);
 
-        String[] listMode = {"ECB"}; // RSA typically uses ECB for simplicity
+        String[] listMode = {"ECB"};
         chooseModeComboBox = new JComboBox<>(listMode);
         gbc.gridx = 1;
         gbc.gridy = 3;
@@ -98,6 +104,7 @@ public class AsymmetricUI extends JPanel {
 
         txtSizeRSA = new JTextField(20);
         txtSizeRSA.setEditable(false);
+        txtSizeRSA.setMinimumSize(new Dimension(200, 25));
         gbc.gridx = 1;
         gbc.gridy = 6;
         settingsPanel.add(txtSizeRSA, gbc);
@@ -132,17 +139,20 @@ public class AsymmetricUI extends JPanel {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        add(settingsPanel, gbc);
+        gbc.gridwidth = 1;
+        gbc.weighty = 0.4;
+        mainPanel.add(settingsPanel, gbc);
 
         // File Selection Panel
         JPanel filePanel = new JPanel(new GridBagLayout());
         filePanel.setBorder(BorderFactory.createTitledBorder("File Selection"));
+        filePanel.setMinimumSize(new Dimension(400, 200));
 
         inputFileLabel = new JLabel("Input File:");
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
+        gbc.weightx = 0.5;
         filePanel.add(inputFileLabel, gbc);
 
         outputFileLabel = new JLabel("Output File:");
@@ -150,17 +160,19 @@ public class AsymmetricUI extends JPanel {
         gbc.gridy = 0;
         filePanel.add(outputFileLabel, gbc);
 
-        txtInputFilePath = new JTextArea(3, 30);
+        txtInputFilePath = new JTextArea(3, 20);
         txtInputFilePath.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JScrollPane inputFileScroll = new JScrollPane(txtInputFilePath);
+        inputFileScroll.setMinimumSize(new Dimension(200, 60));
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.fill = GridBagConstraints.BOTH;
         filePanel.add(inputFileScroll, gbc);
 
-        txtOutputFilePath = new JTextArea(3, 30);
+        txtOutputFilePath = new JTextArea(3, 20);
         txtOutputFilePath.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JScrollPane outputFileScroll = new JScrollPane(txtOutputFilePath);
+        outputFileScroll.setMinimumSize(new Dimension(200, 60));
         gbc.gridx = 1;
         gbc.gridy = 1;
         filePanel.add(outputFileScroll, gbc);
@@ -188,30 +200,35 @@ public class AsymmetricUI extends JPanel {
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(filePanel, gbc);
+        gbc.gridwidth = 1;
+        gbc.weighty = 0.2;
+        mainPanel.add(filePanel, gbc);
 
         // Text Input/Output Panel
         JPanel textPanel = new JPanel(new GridBagLayout());
         textPanel.setBorder(BorderFactory.createTitledBorder("Text Input/Output"));
+        textPanel.setMinimumSize(new Dimension(400, 200));
 
         sourceTextLabel = new JLabel("Source Text:");
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         textPanel.add(sourceTextLabel, gbc);
 
-        txtEncrypt = new JTextArea(7, 30);
+        txtEncrypt = new JTextArea(7, 20);
         txtEncrypt.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JScrollPane encryptScroll = new JScrollPane(txtEncrypt);
+        encryptScroll.setMinimumSize(new Dimension(200, 100));
         gbc.gridx = 0;
         gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.BOTH;
         textPanel.add(encryptScroll, gbc);
 
-        txtDecrypt = new JTextArea(7, 30);
+        txtDecrypt = new JTextArea(7, 20);
         txtDecrypt.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JScrollPane decryptScroll = new JScrollPane(txtDecrypt);
+        decryptScroll.setMinimumSize(new Dimension(200, 100));
         gbc.gridx = 1;
         gbc.gridy = 1;
         textPanel.add(decryptScroll, gbc);
@@ -219,6 +236,7 @@ public class AsymmetricUI extends JPanel {
         encryptButton = new JButton("Encrypt");
         gbc.gridx = 0;
         gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         textPanel.add(encryptButton, gbc);
 
         decryptButton = new JButton("Decrypt");
@@ -228,8 +246,14 @@ public class AsymmetricUI extends JPanel {
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        add(textPanel, gbc);
+        gbc.gridwidth = 1;
+        gbc.weighty = 0.5;
+        mainPanel.add(textPanel, gbc);
+
+        // Thêm mainPanel vào JScrollPane để hỗ trợ cuộn
+        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        add(scrollPane, BorderLayout.CENTER);
 
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
